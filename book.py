@@ -8,7 +8,7 @@ import base64
 import zipfile
 
 # Initialize OpenAI client
-client = OpenAI(api_key=os.getenv("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"))  # Add your API key
+client = OpenAI(api_key=os.getenv("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"))  # Add your API key
 
 # Streamlit UI
 st.title("🧙♂️ Auto-Book Generator")
