@@ -4,3 +4,4 @@ pillow
 requests 
 fpdf 
 python-dotenv
+python-lorem
