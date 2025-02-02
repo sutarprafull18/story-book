@@ -15,9 +15,11 @@ def generate_story(title):
     story = f"# {title}\n\n"
     
     for i in range(1, 4):
-        story += f"## Chapter {i}: {lorem.sentence()}\n\n"
-        # Generate 3 paragraphs per chapter
-        story += "\n\n".join([lorem.paragraph() for _ in range(3)])
+        chapter_title = str(lorem.sentence())  # Convert generator to string
+        story += f"## Chapter {i}: {chapter_title}\n\n"
+        # Generate 3 paragraphs per chapter and convert to string
+        paragraphs = [str(lorem.paragraph()) for _ in range(3)]
+        story += "\n\n".join(paragraphs)
         story += "\n\n"
     
     return story
@@ -38,16 +40,20 @@ def create_pdf(title, content, images):
     
     # Split content into pages
     for page in content.split('\n\n'):
-        pdf.multi_cell(0, 10, txt=page)
-        if images:
-            img_url = images.pop(0)
+        if page.strip():  # Only process non-empty pages
             try:
-                img_data = requests.get(img_url).content
-                with open("temp_img.jpg", "wb") as f:
-                    f.write(img_data)
-                pdf.image("temp_img.jpg", x=10, w=180)
+                pdf.multi_cell(0, 10, txt=page)
+                if images:
+                    img_url = images.pop(0)
+                    try:
+                        img_data = requests.get(img_url).content
+                        with open("temp_img.jpg", "wb") as f:
+                            f.write(img_data)
+                        pdf.image("temp_img.jpg", x=10, w=180)
+                    except Exception as e:
+                        st.warning(f"Failed to add image: {e}")
             except Exception as e:
-                st.warning(f"Failed to add image: {e}")
+                st.warning(f"Failed to add text: {e}")
     
     pdf.output("book.pdf")
     return "book.pdf"
